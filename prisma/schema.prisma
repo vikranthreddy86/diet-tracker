@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum FoodSource {
+  system
+  custom
+}
+
+enum MealType {
+  breakfast
+  lunch
+  dinner
+  snack
+}
+
+/// One row per Supabase-authenticated user. Id matches auth.users.id.
+model Profile {
+  id               String   @id @db.Uuid
+  email            String   @unique
+  dailyCalorieGoal Int?
+  proteinGoalG     Int?
+  carbsGoalG       Int?
+  fatGoalG         Int?
+  fiberGoalG       Int?
+  createdAt        DateTime @default(now())
+
+  foodLogEntries     FoodLogEntry[]
+  customFoods        Food[]             @relation("CustomFoodsByUser")
+  weightEntries      WeightEntry[]
+  measurementTypes   MeasurementType[]
+  measurementEntries MeasurementEntry[]
+  whoopDailyEnergy   WhoopDailyEnergy[]
+}
+
+model Food {
+  id              String     @id @default(uuid()) @db.Uuid
+  name            String
+  brand           String?
+  servingSize     Float
+  servingUnit     String
+  calories        Float
+  proteinG        Float
+  carbsG          Float
+  fatG            Float
+  fiberG          Float?
+  sugarG          Float?
+  sodiumMg        Float?
+  category        String?
+  isIndian        Boolean    @default(false)
+  source          FoodSource @default(custom)
+  createdByUserId String?    @db.Uuid
+  createdBy       Profile?   @relation("CustomFoodsByUser", fields: [createdByUserId], references: [id])
+  createdAt       DateTime   @default(now())
+
+  logEntries FoodLogEntry[]
+
+  @@index([name])
+  @@index([createdByUserId])
+}
+
+model FoodLogEntry {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  user              Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodId            String   @db.Uuid
+  food              Food     @relation(fields: [foodId], references: [id])
+  date              DateTime @db.Date
+  servingMultiplier Float    @default(1)
+  mealType          MealType
+  loggedAt          DateTime @default(now())
+
+  @@index([userId, date])
+}
+
+model WeightEntry {
+  id       String   @id @default(uuid()) @db.Uuid
+  userId   String   @db.Uuid
+  user     Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date     DateTime @db.Date
+  weightKg Float
+  note     String?
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model MeasurementType {
+  id        String  @id @default(uuid()) @db.Uuid
+  userId    String  @db.Uuid
+  user      Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  unit      String
+  sortOrder Int     @default(0)
+  archived  Boolean @default(false)
+
+  entries MeasurementEntry[]
+
+  @@index([userId])
+}
+
+model MeasurementEntry {
+  id                String          @id @default(uuid()) @db.Uuid
+  userId            String          @db.Uuid
+  user              Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  measurementTypeId String          @db.Uuid
+  measurementType   MeasurementType @relation(fields: [measurementTypeId], references: [id], onDelete: Cascade)
+  date              DateTime        @db.Date
+  value             Float
+
+  @@unique([measurementTypeId, date])
+  @@index([userId, date])
+}
+
+/// One row per Whoop "cycle" day, upserted on (userId, date) each import.
+model WhoopDailyEnergy {
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String    @db.Uuid
+  user           Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date           DateTime  @db.Date
+  caloriesBurned Float
+  strain         Float?
+  cycleStart     DateTime
+  cycleEnd       DateTime?
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}

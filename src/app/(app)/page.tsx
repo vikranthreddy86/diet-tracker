@@ -4,6 +4,7 @@ import { getDailyLog } from "@/lib/data/food";
 import { getNutritionTrend } from "@/lib/data/trends";
 import { getWeightEntries } from "@/lib/data/progress";
 import { getWhoopEnergyForDate } from "@/lib/data/whoop";
+import { getProfile } from "@/lib/data/settings";
 import { todayIST, formatDateLabel, isValidDateStr, addDaysToDateStr } from "@/lib/date";
 import SummaryCards from "@/components/SummaryCards";
 import TodayEntries from "@/components/TodayEntries";
@@ -32,11 +33,12 @@ export default async function HomePage({
       : todayDate;
   const isToday = date === todayDate;
 
-  const [{ entries, totals }, weekTrend, latestWeight, whoopEnergy] = await Promise.all([
+  const [{ entries, totals }, weekTrend, latestWeight, whoopEnergy, profile] = await Promise.all([
     getDailyLog(userId, date),
     getNutritionTrend(userId, addDaysToDateStr(todayDate, -6), todayDate),
     getWeightEntries(userId, 1),
     getWhoopEnergyForDate(userId, date),
+    getProfile(userId),
   ]);
 
   return (
@@ -77,7 +79,16 @@ export default async function HomePage({
             {whoopEnergy && (
               <DeficitCard burned={whoopEnergy.caloriesBurned} consumed={totals.calories} />
             )}
-            <SummaryCards totals={totals} />
+            <SummaryCards
+              totals={totals}
+              goals={{
+                dailyCalorieGoal: profile.dailyCalorieGoal,
+                proteinGoalG: profile.proteinGoalG,
+                carbsGoalG: profile.carbsGoalG,
+                fatGoalG: profile.fatGoalG,
+                fiberGoalG: profile.fiberGoalG,
+              }}
+            />
             <AddFoodPanel date={date} />
             <TodayEntries entries={entries} />
           </div>

@@ -1,10 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { getWeightEntries, getMeasurementTypesWithEntries } from "@/lib/data/progress";
 import { getWhoopConnection, getWhoopEnergyRange } from "@/lib/data/whoop";
+import { getProfile } from "@/lib/data/settings";
 import { todayIST, addDaysToDateStr } from "@/lib/date";
 import WeightSection from "@/components/WeightSection";
 import MeasurementsSection from "@/components/MeasurementsSection";
 import WhoopSection from "@/components/WhoopSection";
+import GoalsSection from "@/components/GoalsSection";
 
 export default async function ProgressPage({
   searchParams,
@@ -20,12 +22,14 @@ export default async function ProgressPage({
   const today = todayIST();
   const { whoopConnected, whoopError } = await searchParams;
 
-  const [weightEntries, measurementTypes, whoopConnection, whoopEnergy] = await Promise.all([
-    getWeightEntries(userId),
-    getMeasurementTypesWithEntries(userId),
-    getWhoopConnection(userId),
-    getWhoopEnergyRange(userId, addDaysToDateStr(today, -13), today),
-  ]);
+  const [weightEntries, measurementTypes, whoopConnection, whoopEnergy, profile] =
+    await Promise.all([
+      getWeightEntries(userId),
+      getMeasurementTypesWithEntries(userId),
+      getWhoopConnection(userId),
+      getWhoopEnergyRange(userId, addDaysToDateStr(today, -13), today),
+      getProfile(userId),
+    ]);
 
   const whoopNotice = whoopConnected
     ? ({ type: "connected" } as const)
@@ -55,7 +59,16 @@ export default async function ProgressPage({
               notice={whoopNotice}
             />
           </div>
-          <div className="md:col-span-2">
+          <div className="flex flex-col gap-4 md:col-span-2">
+            <GoalsSection
+              goals={{
+                dailyCalorieGoal: profile.dailyCalorieGoal,
+                proteinGoalG: profile.proteinGoalG,
+                carbsGoalG: profile.carbsGoalG,
+                fatGoalG: profile.fatGoalG,
+                fiberGoalG: profile.fiberGoalG,
+              }}
+            />
             <MeasurementsSection types={measurementTypes} />
           </div>
         </div>

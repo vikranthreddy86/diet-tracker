@@ -87,11 +87,11 @@ export const indianFoods: SeedFood[] = [
   { name: "Chana Chaat", servingSize: 150, servingUnit: "g", calories: 200, proteinG: 9, carbsG: 30, fatG: 5, fiberG: 8, category: "Snacks" },
   { name: "Bhel Puri", servingSize: 150, servingUnit: "g", calories: 220, proteinG: 5, carbsG: 38, fatG: 6, fiberG: 3, category: "Snacks" },
   { name: "Sev Puri", servingSize: 150, servingUnit: "g", calories: 260, proteinG: 5, carbsG: 36, fatG: 11, fiberG: 3, category: "Snacks" },
-  { name: "Pani Puri", servingSize: 6, servingUnit: "pieces", calories: 180, proteinG: 3, carbsG: 30, fatG: 5, fiberG: 2, category: "Snacks" },
+  { name: "Pani Puri", servingSize: 6, servingUnit: "pieces (~90g)", calories: 180, proteinG: 3, carbsG: 30, fatG: 5, fiberG: 2, category: "Snacks" },
 
   // Eggs, tandoor & grills
-  { name: "Boiled Egg", servingSize: 1, servingUnit: "large egg", calories: 78, proteinG: 6.3, carbsG: 0.6, fatG: 5.3, fiberG: 0, category: "Eggs" },
-  { name: "Omelette (2 eggs)", servingSize: 1, servingUnit: "serving", calories: 200, proteinG: 13, carbsG: 2, fatG: 16, fiberG: 0, category: "Eggs" },
+  { name: "Boiled Egg", servingSize: 1, servingUnit: "large egg (~50g)", calories: 78, proteinG: 6.3, carbsG: 0.6, fatG: 5.3, fiberG: 0, category: "Eggs" },
+  { name: "Omelette (2 eggs)", servingSize: 1, servingUnit: "serving (~120g)", calories: 200, proteinG: 13, carbsG: 2, fatG: 16, fiberG: 0, category: "Eggs" },
   { name: "Egg Bhurji", servingSize: 1, servingUnit: "serving (2 eggs, ~150g)", calories: 240, proteinG: 14, carbsG: 5, fatG: 18, fiberG: 1, category: "Eggs" },
   { name: "Tandoori Chicken", servingSize: 150, servingUnit: "g (leg piece)", calories: 260, proteinG: 32, carbsG: 3, fatG: 13, fiberG: 0.5, category: "Non-veg curry" },
   { name: "Chicken Tikka", servingSize: 150, servingUnit: "g", calories: 230, proteinG: 30, carbsG: 4, fatG: 10, fiberG: 0.5, category: "Non-veg curry" },

@@ -111,16 +111,22 @@ export async function deleteLogEntry(formData: FormData) {
   revalidatePath("/");
 }
 
+function hasWeightHint(servingUnit: string): boolean {
+  const u = servingUnit.trim().toLowerCase();
+  return u.startsWith("g") || u.startsWith("ml") || /\d+(?:\.\d+)?\s*(g|ml)\b/.test(u);
+}
+
 export async function addCustomFood(formData: FormData) {
   const userId = await requireUserId();
   const date = String(formData.get("date"));
   const name = String(formData.get("name") ?? "").trim();
   const servingSize = Number(formData.get("servingSize"));
-  const servingUnit = String(formData.get("servingUnit") ?? "").trim();
+  let servingUnit = String(formData.get("servingUnit") ?? "").trim();
   const calories = Number(formData.get("calories"));
   const proteinG = Number(formData.get("proteinG"));
   const carbsG = Number(formData.get("carbsG"));
   const fatG = Number(formData.get("fatG"));
+  const servingWeightG = numOrNull(formData.get("servingWeightG"));
 
   if (
     !name ||
@@ -129,6 +135,10 @@ export async function addCustomFood(formData: FormData) {
     ![servingSize, calories, proteinG, carbsG, fatG].every(Number.isFinite)
   ) {
     throw new Error("Invalid custom food");
+  }
+
+  if (servingWeightG !== null && servingWeightG > 0 && !hasWeightHint(servingUnit)) {
+    servingUnit = `${servingUnit} (~${servingWeightG}g)`;
   }
 
   const food = await prisma.food.create({

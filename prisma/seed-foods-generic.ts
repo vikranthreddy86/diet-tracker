@@ -76,7 +76,7 @@ export const genericFoods: SeedFood[] = [
   { name: "Greek Yogurt (plain)", servingSize: 150, servingUnit: "g", calories: 100, proteinG: 17, carbsG: 6, fatG: 0.7, fiberG: 0, sugarG: 6, category: "Dairy" },
   { name: "Butter", servingSize: 1, servingUnit: "tsp (5g)", calories: 36, proteinG: 0, carbsG: 0, fatG: 4, fiberG: 0, category: "Dairy" },
   { name: "Skimmed Milk", servingSize: 250, servingUnit: "ml", calories: 88, proteinG: 8.5, carbsG: 12.5, fatG: 0.5, fiberG: 0, category: "Dairy" },
-  { name: "Egg White", servingSize: 1, servingUnit: "large egg white", calories: 17, proteinG: 3.6, carbsG: 0.2, fatG: 0.1, fiberG: 0, category: "Eggs" },
+  { name: "Egg White", servingSize: 1, servingUnit: "large egg white (~33g)", calories: 17, proteinG: 3.6, carbsG: 0.2, fatG: 0.1, fiberG: 0, category: "Eggs" },
 
   // Meat, poultry, fish, seafood (plain cooked, no sauce)
   { name: "Chicken Breast (grilled, skinless)", servingSize: 100, servingUnit: "g", calories: 165, proteinG: 31, carbsG: 0, fatG: 3.6, fiberG: 0, category: "Meat & Fish" },

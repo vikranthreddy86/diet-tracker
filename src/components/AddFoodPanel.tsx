@@ -35,13 +35,18 @@ type ExternalFood = {
 const inputClass =
   "w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100";
 
-// For foods whose serving is measured in grams/ml, let the user type the
-// actual amount eaten instead of doing serving-multiplier math themselves.
-function weightUnit(servingUnit: string): "g" | "ml" | null {
-  const u = servingUnit.trim().toLowerCase();
-  if (u.startsWith("g")) return "g";
-  if (u.startsWith("ml")) return "ml";
-  return null;
+// Every food can be logged by weight: if the serving unit isn't already
+// grams/ml (e.g. "piece (~40g)", "large egg (~50g)"), pull the gram/ml
+// equivalent out of the descriptive text so weight entry still works.
+function weightBasis(food: {
+  servingSize: number;
+  servingUnit: string;
+}): { grams: number; unit: "g" | "ml" } | null {
+  const u = food.servingUnit.trim().toLowerCase();
+  if (u.startsWith("g")) return { grams: food.servingSize, unit: "g" };
+  if (u.startsWith("ml")) return { grams: food.servingSize, unit: "ml" };
+  const match = u.match(/(\d+(?:\.\d+)?)\s*(g|ml)\b/);
+  return match ? { grams: Number(match[1]), unit: match[2] as "g" | "ml" } : null;
 }
 
 function AmountInput({
@@ -57,15 +62,28 @@ function AmountInput({
   onMultiplierChange: (v: string) => void;
   onWeightChange: (v: string) => void;
 }) {
-  const unit = weightUnit(food.servingUnit);
+  const basis = weightBasis(food);
+  const isNativelyWeight = /^(g|ml)\b/.test(food.servingUnit.trim().toLowerCase());
+  const [mode, setMode] = useState<"servings" | "weight">(isNativelyWeight ? "weight" : "servings");
   const estimatedCalories = Math.round((Number(multiplier) || 0) * food.calories);
 
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-slate-500">
-        {unit ? `Weight eaten (${unit})` : "Servings eaten"}
-      </label>
-      {unit ? (
+      <div className="mb-1 flex items-center justify-between">
+        <label className="block text-xs font-medium text-slate-500">
+          {mode === "weight" ? `Weight eaten (${basis?.unit ?? "g"})` : "Servings eaten"}
+        </label>
+        {basis && !isNativelyWeight && (
+          <button
+            type="button"
+            onClick={() => setMode(mode === "servings" ? "weight" : "servings")}
+            className="text-[11px] font-medium text-emerald-600 underline hover:text-emerald-800"
+          >
+            {mode === "servings" ? `Log by weight instead` : "Log by servings instead"}
+          </button>
+        )}
+      </div>
+      {mode === "weight" && basis ? (
         <input
           type="number"
           step="1"
@@ -73,11 +91,9 @@ function AmountInput({
           value={weightText}
           onChange={(e) => {
             onWeightChange(e.target.value);
-            const grams = Number(e.target.value);
+            const amount = Number(e.target.value);
             onMultiplierChange(
-              Number.isFinite(grams) && food.servingSize > 0
-                ? String(grams / food.servingSize)
-                : "0"
+              Number.isFinite(amount) && basis.grams > 0 ? String(amount / basis.grams) : "0"
             );
           }}
           className={`${inputClass} w-28`}
@@ -155,13 +171,13 @@ export default function AddFoodPanel({ date }: { date: string }) {
   function selectLocal(f: Food) {
     setSelectedLocal(f);
     setMultiplier("1");
-    setWeightText(String(f.servingSize));
+    setWeightText(String(weightBasis(f)?.grams ?? f.servingSize));
   }
 
   function selectExternal(f: ExternalFood) {
     setSelectedExternal(f);
     setMultiplier("1");
-    setWeightText(String(f.servingSize));
+    setWeightText(String(weightBasis(f)?.grams ?? f.servingSize));
   }
 
   if (!open) {
@@ -375,6 +391,13 @@ export default function AddFoodPanel({ date }: { date: string }) {
                 className={inputClass}
               />
             </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs font-medium text-slate-500">
+              Weight of 1 serving (g, optional — lets you log this by weight later)
+            </label>
+            <input name="servingWeightG" type="number" step="1" className={inputClass} />
           </div>
 
           <div className="grid grid-cols-2 gap-2">

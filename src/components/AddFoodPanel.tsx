@@ -32,6 +32,9 @@ type ExternalFood = {
   magnesiumMg: number | null;
 };
 
+const inputClass =
+  "w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100";
+
 // For foods whose serving is measured in grams/ml, let the user type the
 // actual amount eaten instead of doing serving-multiplier math themselves.
 function weightUnit(servingUnit: string): "g" | "ml" | null {
@@ -59,7 +62,7 @@ function AmountInput({
 
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-neutral-600">
+      <label className="mb-1 block text-xs font-medium text-slate-500">
         {unit ? `Weight eaten (${unit})` : "Servings eaten"}
       </label>
       {unit ? (
@@ -77,7 +80,7 @@ function AmountInput({
                 : "0"
             );
           }}
-          className="w-28 rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
+          className={`${inputClass} w-28`}
         />
       ) : (
         <input
@@ -86,11 +89,11 @@ function AmountInput({
           min="0.25"
           value={multiplier}
           onChange={(e) => onMultiplierChange(e.target.value)}
-          className="w-24 rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
+          className={`${inputClass} w-24`}
         />
       )}
       {multiplier && Number(multiplier) > 0 && (
-        <p className="mt-1 text-xs text-neutral-400">≈ {estimatedCalories} kcal</p>
+        <p className="mt-1 text-xs font-medium text-orange-500">≈ {estimatedCalories} kcal</p>
       )}
     </div>
   );
@@ -165,18 +168,18 @@ export default function AddFoodPanel({ date }: { date: string }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full rounded-xl border border-dashed border-neutral-300 bg-white py-3 text-sm font-medium text-neutral-600 hover:border-neutral-400"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 py-3.5 text-sm font-semibold text-white shadow-md shadow-emerald-900/10 hover:from-emerald-600 hover:to-teal-600"
       >
-        + Add food
+        <span className="text-lg leading-none">+</span> Add food
       </button>
     );
   }
 
   return (
-    <div className="space-y-3 rounded-xl border border-neutral-200 bg-white p-4">
+    <div className="space-y-3 rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-neutral-900">Add food</h3>
-        <button onClick={reset} className="text-xs text-neutral-400 hover:text-neutral-700">
+        <h3 className="text-sm font-semibold text-slate-900">Add food</h3>
+        <button onClick={reset} className="text-xs text-slate-400 hover:text-slate-700">
           Cancel
         </button>
       </div>
@@ -188,13 +191,13 @@ export default function AddFoodPanel({ date }: { date: string }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search food (e.g. roti, apple, chicken breast)"
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
+            className={inputClass}
           />
 
-          {loading && <p className="mt-2 text-xs text-neutral-400">Searching…</p>}
+          {loading && <p className="mt-2 text-xs text-slate-400">Searching…</p>}
 
           {!loading && hasQuery && visibleResults.length === 0 && visibleExternal.length === 0 && (
-            <p className="mt-2 text-xs text-neutral-500">No matches.</p>
+            <p className="mt-2 text-xs text-slate-400">No matches.</p>
           )}
 
           {visibleResults.length > 0 && (
@@ -204,10 +207,10 @@ export default function AddFoodPanel({ date }: { date: string }) {
                   <button
                     type="button"
                     onClick={() => selectLocal(f)}
-                    className="w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-neutral-100"
+                    className="w-full rounded-lg px-2 py-1.5 text-left text-sm hover:bg-emerald-50"
                   >
-                    <span className="font-medium text-neutral-900">{f.name}</span>
-                    <span className="ml-1 text-xs text-neutral-500">
+                    <span className="font-medium text-slate-900">{f.name}</span>
+                    <span className="ml-1 text-xs text-slate-400">
                       {f.calories} kcal / {f.servingSize} {f.servingUnit}
                     </span>
                   </button>
@@ -218,7 +221,7 @@ export default function AddFoodPanel({ date }: { date: string }) {
 
           {visibleExternal.length > 0 && (
             <div className="mt-2">
-              <p className="px-2 text-[11px] font-medium uppercase tracking-wide text-neutral-400">
+              <p className="px-2 text-[11px] font-semibold uppercase tracking-wide text-violet-400">
                 From USDA FoodData Central
               </p>
               <ul className="max-h-40 space-y-1 overflow-y-auto">
@@ -227,11 +230,11 @@ export default function AddFoodPanel({ date }: { date: string }) {
                     <button
                       type="button"
                       onClick={() => selectExternal(f)}
-                      className="w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-neutral-100"
+                      className="w-full rounded-lg px-2 py-1.5 text-left text-sm hover:bg-violet-50"
                     >
-                      <span className="font-medium text-neutral-900">{f.name}</span>
-                      {f.brand && <span className="ml-1 text-xs text-neutral-400">{f.brand}</span>}
-                      <span className="ml-1 text-xs text-neutral-500">
+                      <span className="font-medium text-slate-900">{f.name}</span>
+                      {f.brand && <span className="ml-1 text-xs text-slate-400">{f.brand}</span>}
+                      <span className="ml-1 text-xs text-slate-400">
                         {f.calories} kcal / {f.servingSize} {f.servingUnit}
                       </span>
                     </button>
@@ -244,7 +247,7 @@ export default function AddFoodPanel({ date }: { date: string }) {
           <button
             type="button"
             onClick={() => setShowCustomForm(true)}
-            className="mt-3 text-xs font-medium text-neutral-600 underline hover:text-neutral-900"
+            className="mt-3 text-xs font-medium text-emerald-600 underline hover:text-emerald-800"
           >
             Still can&apos;t find it? Add a custom food
           </button>
@@ -257,9 +260,9 @@ export default function AddFoodPanel({ date }: { date: string }) {
           <input type="hidden" name="date" value={date} />
           <input type="hidden" name="servingMultiplier" value={multiplier} />
 
-          <div className="rounded-md bg-neutral-50 p-3 text-sm">
-            <p className="font-medium text-neutral-900">{selectedLocal.name}</p>
-            <p className="text-xs text-neutral-500">
+          <div className="rounded-lg bg-emerald-50 p-3 text-sm">
+            <p className="font-medium text-slate-900">{selectedLocal.name}</p>
+            <p className="text-xs text-slate-500">
               {selectedLocal.calories} kcal per {selectedLocal.servingSize} {selectedLocal.servingUnit}
             </p>
           </div>
@@ -276,13 +279,13 @@ export default function AddFoodPanel({ date }: { date: string }) {
             <button
               type="button"
               onClick={() => setSelectedLocal(null)}
-              className="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-600"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
             >
               Back
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-md bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+              className="flex-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
             >
               Log it
             </button>
@@ -310,12 +313,12 @@ export default function AddFoodPanel({ date }: { date: string }) {
           <input type="hidden" name="date" value={date} />
           <input type="hidden" name="servingMultiplier" value={multiplier} />
 
-          <div className="rounded-md bg-neutral-50 p-3 text-sm">
-            <p className="font-medium text-neutral-900">{selectedExternal.name}</p>
+          <div className="rounded-lg bg-violet-50 p-3 text-sm">
+            <p className="font-medium text-slate-900">{selectedExternal.name}</p>
             {selectedExternal.brand && (
-              <p className="text-xs text-neutral-400">{selectedExternal.brand}</p>
+              <p className="text-xs text-slate-400">{selectedExternal.brand}</p>
             )}
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-slate-500">
               {selectedExternal.calories} kcal per {selectedExternal.servingSize}{" "}
               {selectedExternal.servingUnit} · USDA FoodData Central
             </p>
@@ -333,13 +336,13 @@ export default function AddFoodPanel({ date }: { date: string }) {
             <button
               type="button"
               onClick={() => setSelectedExternal(null)}
-              className="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-600"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
             >
               Back
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-md bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+              className="flex-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
             >
               Log it
             </button>
@@ -352,34 +355,24 @@ export default function AddFoodPanel({ date }: { date: string }) {
           <input type="hidden" name="date" value={date} />
 
           <div>
-            <label className="mb-1 block text-xs font-medium text-neutral-600">Name</label>
-            <input
-              name="name"
-              required
-              className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
-            />
+            <label className="mb-1 block text-xs font-medium text-slate-500">Name</label>
+            <input name="name" required className={inputClass} />
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600">
+              <label className="mb-1 block text-xs font-medium text-slate-500">
                 Serving size
               </label>
-              <input
-                name="servingSize"
-                type="number"
-                step="0.1"
-                required
-                className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
-              />
+              <input name="servingSize" type="number" step="0.1" required className={inputClass} />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600">Unit</label>
+              <label className="mb-1 block text-xs font-medium text-slate-500">Unit</label>
               <input
                 name="servingUnit"
                 placeholder="g, piece, cup…"
                 required
-                className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
+                className={inputClass}
               />
             </div>
           </div>
@@ -398,15 +391,13 @@ export default function AddFoodPanel({ date }: { date: string }) {
               { name: "magnesiumMg", label: "Magnesium (mg, optional)" },
             ].map((f) => (
               <div key={f.name}>
-                <label className="mb-1 block text-xs font-medium text-neutral-600">
-                  {f.label}
-                </label>
+                <label className="mb-1 block text-xs font-medium text-slate-500">{f.label}</label>
                 <input
                   name={f.name}
                   type="number"
                   step="0.1"
                   required={!f.label.includes("optional")}
-                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
+                  className={inputClass}
                 />
               </div>
             ))}
@@ -416,13 +407,13 @@ export default function AddFoodPanel({ date }: { date: string }) {
             <button
               type="button"
               onClick={() => setShowCustomForm(false)}
-              className="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-600"
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
             >
               Back
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-md bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+              className="flex-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
             >
               Save & log it
             </button>

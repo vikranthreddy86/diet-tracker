@@ -9,23 +9,26 @@ export default async function LoginPage({
   const { error, message } = await searchParams;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
-      <div className="w-full max-w-sm space-y-6 rounded-xl border border-neutral-200 bg-white p-8 shadow-sm">
-        <div>
-          <h1 className="text-xl font-semibold text-neutral-900">Log in</h1>
-          <p className="mt-1 text-sm text-neutral-500">Track your food, weight, and progress.</p>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 px-4">
+      <div className="w-full max-w-sm space-y-6 rounded-3xl bg-white p-8 shadow-xl">
+        <div className="text-center">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-2xl shadow-md shadow-emerald-900/20">
+            🥗
+          </span>
+          <h1 className="mt-3 text-xl font-bold text-slate-900">Welcome back</h1>
+          <p className="mt-1 text-sm text-slate-500">Track your food, weight, and progress.</p>
         </div>
 
         {message && (
-          <p className="rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-700">{message}</p>
+          <p className="rounded-lg bg-sky-50 px-3 py-2 text-sm text-sky-700">{message}</p>
         )}
         {error && (
-          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+          <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>
         )}
 
         <form action={signIn} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-neutral-700">
+            <label htmlFor="email" className="block text-sm font-medium text-slate-700">
               Email
             </label>
             <input
@@ -34,11 +37,11 @@ export default async function LoginPage({
               type="email"
               required
               autoComplete="email"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-neutral-700">
+            <label htmlFor="password" className="block text-sm font-medium text-slate-700">
               Password
             </label>
             <input
@@ -47,20 +50,20 @@ export default async function LoginPage({
               type="password"
               required
               autoComplete="current-password"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-500 focus:outline-none"
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
             />
           </div>
           <button
             type="submit"
-            className="w-full rounded-md bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-neutral-800"
+            className="w-full rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-900/10 hover:from-emerald-600 hover:to-teal-600"
           >
             Log in
           </button>
         </form>
 
-        <p className="text-center text-sm text-neutral-500">
+        <p className="text-center text-sm text-slate-500">
           No account?{" "}
-          <Link href="/signup" className="font-medium text-neutral-900 underline">
+          <Link href="/signup" className="font-semibold text-emerald-600 hover:text-emerald-700">
             Sign up
           </Link>
         </p>

@@ -17,6 +17,13 @@ export async function searchFoods(userId: string, query: string) {
   });
 }
 
+export async function getAllFoods(userId: string) {
+  return prisma.food.findMany({
+    where: { OR: [{ source: "system" }, { source: "usda" }, { createdByUserId: userId }] },
+    orderBy: [{ name: "asc" }],
+  });
+}
+
 export type DailyTotals = {
   calories: number;
   proteinG: number;

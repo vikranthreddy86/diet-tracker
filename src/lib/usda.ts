@@ -12,6 +12,9 @@ const NUTRIENT_IDS = {
   fiberG: 1079,
   sugarG: 2000,
   sodiumMg: 1093,
+  calciumMg: 1087,
+  potassiumMg: 1092,
+  magnesiumMg: 1090,
 } as const;
 
 export type ExternalFood = {
@@ -27,6 +30,9 @@ export type ExternalFood = {
   fiberG: number | null;
   sugarG: number | null;
   sodiumMg: number | null;
+  calciumMg: number | null;
+  potassiumMg: number | null;
+  magnesiumMg: number | null;
 };
 
 type UsdaFoodNutrient = {
@@ -85,6 +91,15 @@ export async function searchUsdaFoods(query: string, pageSize = 15): Promise<Ext
           : null,
         sodiumMg: n.some((x) => x.nutrientId === NUTRIENT_IDS.sodiumMg)
           ? Math.round(nutrientValue(n, NUTRIENT_IDS.sodiumMg))
+          : null,
+        calciumMg: n.some((x) => x.nutrientId === NUTRIENT_IDS.calciumMg)
+          ? Math.round(nutrientValue(n, NUTRIENT_IDS.calciumMg))
+          : null,
+        potassiumMg: n.some((x) => x.nutrientId === NUTRIENT_IDS.potassiumMg)
+          ? Math.round(nutrientValue(n, NUTRIENT_IDS.potassiumMg))
+          : null,
+        magnesiumMg: n.some((x) => x.nutrientId === NUTRIENT_IDS.magnesiumMg)
+          ? Math.round(nutrientValue(n, NUTRIENT_IDS.magnesiumMg))
           : null,
       };
       return food;

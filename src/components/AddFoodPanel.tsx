@@ -27,6 +27,9 @@ type ExternalFood = {
   fiberG: number | null;
   sugarG: number | null;
   sodiumMg: number | null;
+  calciumMg: number | null;
+  potassiumMg: number | null;
+  magnesiumMg: number | null;
 };
 
 // For foods whose serving is measured in grams/ml, let the user type the
@@ -301,6 +304,9 @@ export default function AddFoodPanel({ date }: { date: string }) {
           <input type="hidden" name="fiberG" value={selectedExternal.fiberG ?? ""} />
           <input type="hidden" name="sugarG" value={selectedExternal.sugarG ?? ""} />
           <input type="hidden" name="sodiumMg" value={selectedExternal.sodiumMg ?? ""} />
+          <input type="hidden" name="calciumMg" value={selectedExternal.calciumMg ?? ""} />
+          <input type="hidden" name="potassiumMg" value={selectedExternal.potassiumMg ?? ""} />
+          <input type="hidden" name="magnesiumMg" value={selectedExternal.magnesiumMg ?? ""} />
           <input type="hidden" name="date" value={date} />
           <input type="hidden" name="servingMultiplier" value={multiplier} />
 
@@ -387,6 +393,9 @@ export default function AddFoodPanel({ date }: { date: string }) {
               { name: "fiberG", label: "Fiber (g, optional)" },
               { name: "sugarG", label: "Sugar (g, optional)" },
               { name: "sodiumMg", label: "Sodium (mg, optional)" },
+              { name: "calciumMg", label: "Calcium (mg, optional)" },
+              { name: "potassiumMg", label: "Potassium (mg, optional)" },
+              { name: "magnesiumMg", label: "Magnesium (mg, optional)" },
             ].map((f) => (
               <div key={f.name}>
                 <label className="mb-1 block text-xs font-medium text-neutral-600">

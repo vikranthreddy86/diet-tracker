@@ -46,6 +46,9 @@ model Food {
   fiberG          Float?
   sugarG          Float?
   sodiumMg        Float?
+  calciumMg       Float?
+  potassiumMg     Float?
+  magnesiumMg     Float?
   category        String?
   isIndian        Boolean    @default(false)
   source          FoodSource @default(custom)

@@ -23,6 +23,10 @@ export type DailyTotals = {
   carbsG: number;
   fatG: number;
   fiberG: number;
+  sodiumMg: number;
+  calciumMg: number;
+  potassiumMg: number;
+  magnesiumMg: number;
 };
 
 export async function getDailyLog(userId: string, dateStr: string) {
@@ -42,9 +46,23 @@ export async function getDailyLog(userId: string, dateStr: string) {
       acc.carbsG += e.food.carbsG * mult;
       acc.fatG += e.food.fatG * mult;
       acc.fiberG += (e.food.fiberG ?? 0) * mult;
+      acc.sodiumMg += (e.food.sodiumMg ?? 0) * mult;
+      acc.calciumMg += (e.food.calciumMg ?? 0) * mult;
+      acc.potassiumMg += (e.food.potassiumMg ?? 0) * mult;
+      acc.magnesiumMg += (e.food.magnesiumMg ?? 0) * mult;
       return acc;
     },
-    { calories: 0, proteinG: 0, carbsG: 0, fatG: 0, fiberG: 0 }
+    {
+      calories: 0,
+      proteinG: 0,
+      carbsG: 0,
+      fatG: 0,
+      fiberG: 0,
+      sodiumMg: 0,
+      calciumMg: 0,
+      potassiumMg: 0,
+      magnesiumMg: 0,
+    }
   );
 
   return { entries, totals };

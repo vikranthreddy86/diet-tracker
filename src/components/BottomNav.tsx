@@ -46,6 +46,20 @@ const TABS = [
       </svg>
     ),
   },
+  {
+    href: "/trends",
+    label: "Trends",
+    icon: (active: boolean) => (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <path
+          d="M5 19V10M11 19V5M17 19v-6"
+          className={active ? "stroke-white" : "stroke-emerald-600"}
+          strokeWidth={2.2}
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+  },
 ];
 
 export default function BottomNav() {

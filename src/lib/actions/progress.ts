@@ -55,6 +55,38 @@ export async function addMeasurementType(formData: FormData) {
   revalidatePath("/progress");
 }
 
+const STANDARD_MEASUREMENTS: { name: string; unit: string }[] = [
+  { name: "Waist", unit: "cm" },
+  { name: "Chest", unit: "cm" },
+  { name: "Hips", unit: "cm" },
+  { name: "Neck", unit: "cm" },
+  { name: "Left Arm", unit: "cm" },
+  { name: "Right Arm", unit: "cm" },
+  { name: "Left Thigh", unit: "cm" },
+  { name: "Right Thigh", unit: "cm" },
+  { name: "Body Fat", unit: "%" },
+];
+
+export async function addStandardMeasurementTypes() {
+  const userId = await requireUserId();
+
+  const existing = await prisma.measurementType.findMany({
+    where: { userId },
+    select: { name: true },
+  });
+  const existingNames = new Set(existing.map((e) => e.name.toLowerCase()));
+
+  const toCreate = STANDARD_MEASUREMENTS.filter((m) => !existingNames.has(m.name.toLowerCase()));
+  if (toCreate.length === 0) return;
+
+  const count = await prisma.measurementType.count({ where: { userId } });
+  await prisma.measurementType.createMany({
+    data: toCreate.map((m, i) => ({ userId, name: m.name, unit: m.unit, sortOrder: count + i })),
+  });
+
+  revalidatePath("/progress");
+}
+
 export async function archiveMeasurementType(formData: FormData) {
   const userId = await requireUserId();
   const id = String(formData.get("id"));

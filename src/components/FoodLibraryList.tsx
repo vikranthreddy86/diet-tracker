@@ -98,7 +98,7 @@ export default function FoodLibraryList({ foods }: { foods: Food[] }) {
         {filtered.length} food{filtered.length === 1 ? "" : "s"}
       </p>
 
-      <ul className="space-y-2">
+      <ul className="space-y-2 md:grid md:grid-cols-2 md:gap-2 md:space-y-0 md:items-start">
         {filtered.map((f) => {
           const badge = sourceBadge(f);
           const expanded = expandedId === f.id;

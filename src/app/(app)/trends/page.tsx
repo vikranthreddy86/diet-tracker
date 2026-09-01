@@ -3,7 +3,6 @@ import { getNutritionTrend } from "@/lib/data/trends";
 import { todayIST, addDaysToDateStr, formatDateLabel } from "@/lib/date";
 import RangePicker from "@/components/RangePicker";
 import TrendChart from "@/components/TrendChart";
-import BottomNav from "@/components/BottomNav";
 
 const VALID_RANGES = [7, 30, 90];
 
@@ -49,9 +48,9 @@ export default async function TrendsPage({
   const trend = await getNutritionTrend(user!.id, startDate, today);
 
   return (
-    <div className="min-h-screen pb-20">
-      <header className="bg-gradient-to-br from-emerald-500 to-teal-500 px-4 pb-6 pt-6 text-white">
-        <div className="mx-auto max-w-md">
+    <div className="min-h-screen pb-20 md:pb-0">
+      <header className="bg-gradient-to-br from-emerald-500 to-teal-500 px-4 pb-6 pt-6 text-white md:px-8">
+        <div className="mx-auto max-w-md md:max-w-5xl">
           <h1 className="text-lg font-semibold">Trends</h1>
           <p className="text-sm text-emerald-50">
             {formatDateLabel(startDate)} – {formatDateLabel(today)}
@@ -62,69 +61,71 @@ export default async function TrendsPage({
         </div>
       </header>
 
-      <div className="mx-auto -mt-2 flex max-w-md flex-col gap-4 px-4">
-        <section className="rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
-          <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-            Daily average
-          </h2>
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
-            {MACROS.map((m) => (
-              <div key={m.key} className={`rounded-xl border p-3 text-center ${m.cardClass}`}>
-                <div className="text-lg font-bold">
-                  {round(average(trend.map((t) => t[m.key])))}
+      <div className="mx-auto -mt-2 max-w-md px-4 md:max-w-5xl md:px-8">
+        <div className="flex flex-col gap-4">
+          <section className="rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
+            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Daily average
+            </h2>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+              {MACROS.map((m) => (
+                <div key={m.key} className={`rounded-xl border p-3 text-center ${m.cardClass}`}>
+                  <div className="text-lg font-bold">
+                    {round(average(trend.map((t) => t[m.key])))}
+                  </div>
+                  <div className="text-[11px] font-medium uppercase tracking-wide opacity-70">
+                    {m.label} {m.unit}
+                  </div>
                 </div>
-                <div className="text-[11px] font-medium uppercase tracking-wide opacity-70">
-                  {m.label} {m.unit}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {MACROS.map((m) => (
-          <section
-            key={m.key}
-            className="rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5"
-          >
-            <div className="mb-1 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-900">{m.label}</h3>
-              <span className="text-xs text-slate-400">
-                avg {round(average(trend.map((t) => t[m.key])))} {m.unit}/day
-              </span>
+              ))}
             </div>
-            <TrendChart
-              data={trend.map((t) => ({ date: t.date, value: round(t[m.key]) }))}
-              unit={m.unit}
-              color={m.color}
-            />
           </section>
-        ))}
 
-        <section className="rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
-          <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-            Micronutrients
-          </h2>
-          <div className="space-y-4">
-            {MICROS.map((m) => (
-              <div key={m.key}>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {MACROS.map((m) => (
+              <section
+                key={m.key}
+                className="rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5"
+              >
                 <div className="mb-1 flex items-center justify-between">
-                  <p className="text-xs font-medium text-slate-600">{m.label}</p>
+                  <h3 className="text-sm font-semibold text-slate-900">{m.label}</h3>
                   <span className="text-xs text-slate-400">
-                    avg {Math.round(average(trend.map((t) => t[m.key])))} {m.unit}/day
+                    avg {round(average(trend.map((t) => t[m.key])))} {m.unit}/day
                   </span>
                 </div>
                 <TrendChart
-                  data={trend.map((t) => ({ date: t.date, value: Math.round(t[m.key]) }))}
+                  data={trend.map((t) => ({ date: t.date, value: round(t[m.key]) }))}
                   unit={m.unit}
                   color={m.color}
                 />
-              </div>
+              </section>
             ))}
           </div>
-        </section>
-      </div>
 
-      <BottomNav />
+          <section className="rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
+            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Micronutrients
+            </h2>
+            <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-x-6 lg:space-y-0">
+              {MICROS.map((m) => (
+                <div key={m.key}>
+                  <div className="mb-1 flex items-center justify-between">
+                    <p className="text-xs font-medium text-slate-600">{m.label}</p>
+                    <span className="text-xs text-slate-400">
+                      avg {Math.round(average(trend.map((t) => t[m.key])))} {m.unit}/day
+                    </span>
+                  </div>
+                  <TrendChart
+                    data={trend.map((t) => ({ date: t.date, value: Math.round(t[m.key]) }))}
+                    unit={m.unit}
+                    color={m.color}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }

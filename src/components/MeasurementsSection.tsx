@@ -1,5 +1,6 @@
 import {
   addMeasurementType,
+  addStandardMeasurementTypes,
   archiveMeasurementType,
   logMeasurementEntry,
   deleteMeasurementEntry,
@@ -40,13 +41,23 @@ export default function MeasurementsSection({ types }: { types: MeasurementType[
       </form>
 
       {types.length === 0 && (
-        <p className="text-xs text-slate-400">
-          No measurement types yet — add one above (e.g. Waist, Chest, Left Bicep) to start
-          tracking whatever matters to you.
-        </p>
+        <div className="space-y-2 text-center">
+          <p className="text-xs text-slate-400">
+            No measurement types yet. Start with the common ones people track while losing
+            weight, or add your own above.
+          </p>
+          <form action={addStandardMeasurementTypes}>
+            <button
+              type="submit"
+              className="rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2 text-xs font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
+            >
+              + Add standard set (Waist, Chest, Hips, Neck, Arms, Thighs, Body Fat %)
+            </button>
+          </form>
+        </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0 lg:items-start">
         {types.map((t, i) => {
           const chartData = [...t.entries]
             .reverse()

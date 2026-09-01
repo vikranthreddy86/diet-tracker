@@ -3,6 +3,7 @@ import { signOut } from "@/lib/actions/auth";
 import { getDailyLog } from "@/lib/data/food";
 import { getNutritionTrend } from "@/lib/data/trends";
 import { getWeightEntries } from "@/lib/data/progress";
+import { getWhoopEnergyForDate } from "@/lib/data/whoop";
 import { todayIST, formatDateLabel, isValidDateStr, addDaysToDateStr } from "@/lib/date";
 import SummaryCards from "@/components/SummaryCards";
 import TodayEntries from "@/components/TodayEntries";
@@ -10,6 +11,7 @@ import AddFoodPanel from "@/components/AddFoodPanel";
 import DateNav from "@/components/DateNav";
 import CopyDayButton from "@/components/CopyDayButton";
 import TrendChart from "@/components/TrendChart";
+import DeficitCard from "@/components/DeficitCard";
 
 export default async function HomePage({
   searchParams,
@@ -30,10 +32,11 @@ export default async function HomePage({
       : todayDate;
   const isToday = date === todayDate;
 
-  const [{ entries, totals }, weekTrend, latestWeight] = await Promise.all([
+  const [{ entries, totals }, weekTrend, latestWeight, whoopEnergy] = await Promise.all([
     getDailyLog(userId, date),
     getNutritionTrend(userId, addDaysToDateStr(todayDate, -6), todayDate),
     getWeightEntries(userId, 1),
+    getWhoopEnergyForDate(userId, date),
   ]);
 
   return (
@@ -71,6 +74,9 @@ export default async function HomePage({
       <div className="mx-auto -mt-6 max-w-md px-4 md:max-w-5xl md:px-8">
         <div className="flex flex-col gap-4 md:grid md:grid-cols-3 md:items-start md:gap-6">
           <div className="flex flex-col gap-4 md:col-span-2">
+            {whoopEnergy && (
+              <DeficitCard burned={whoopEnergy.caloriesBurned} consumed={totals.calories} />
+            )}
             <SummaryCards totals={totals} />
             <AddFoodPanel date={date} />
             <TodayEntries entries={entries} />

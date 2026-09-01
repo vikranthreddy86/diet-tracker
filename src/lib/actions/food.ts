@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { dateStrToDate } from "@/lib/date";
-import type { MealType } from "@/lib/types";
 
 async function requireUserId() {
   const supabase = await createClient();
@@ -25,7 +24,6 @@ export async function logFoodEntry(formData: FormData) {
   const userId = await requireUserId();
   const foodId = String(formData.get("foodId"));
   const date = String(formData.get("date"));
-  const mealType = String(formData.get("mealType")) as MealType;
   const servingMultiplier = Number(formData.get("servingMultiplier") ?? 1);
 
   if (!foodId || !date || !Number.isFinite(servingMultiplier) || servingMultiplier <= 0) {
@@ -37,7 +35,6 @@ export async function logFoodEntry(formData: FormData) {
       userId,
       foodId,
       date: dateStrToDate(date),
-      mealType,
       servingMultiplier,
     },
   });
@@ -48,7 +45,6 @@ export async function logFoodEntry(formData: FormData) {
 export async function logExternalFood(formData: FormData) {
   const userId = await requireUserId();
   const date = String(formData.get("date"));
-  const mealType = String(formData.get("mealType")) as MealType;
   const servingMultiplier = Number(formData.get("servingMultiplier") ?? 1);
   const externalId = String(formData.get("externalId") ?? "");
   const name = String(formData.get("name") ?? "").trim();
@@ -98,7 +94,6 @@ export async function logExternalFood(formData: FormData) {
       userId,
       foodId: food.id,
       date: dateStrToDate(date),
-      mealType,
       servingMultiplier,
     },
   });
@@ -116,7 +111,6 @@ export async function deleteLogEntry(formData: FormData) {
 export async function addCustomFood(formData: FormData) {
   const userId = await requireUserId();
   const date = String(formData.get("date"));
-  const mealType = String(formData.get("mealType")) as MealType;
   const name = String(formData.get("name") ?? "").trim();
   const servingSize = Number(formData.get("servingSize"));
   const servingUnit = String(formData.get("servingUnit") ?? "").trim();
@@ -156,7 +150,6 @@ export async function addCustomFood(formData: FormData) {
       userId,
       foodId: food.id,
       date: dateStrToDate(date),
-      mealType,
       servingMultiplier: 1,
     },
   });

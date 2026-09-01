@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/actions/auth";
 import { getDailyLog } from "@/lib/data/food";
 import { todayIST, formatDateLabel } from "@/lib/date";
-import { defaultMealTypeForHour } from "@/lib/types";
 import SummaryCards from "@/components/SummaryCards";
 import TodayEntries from "@/components/TodayEntries";
 import AddFoodPanel from "@/components/AddFoodPanel";
@@ -15,8 +14,6 @@ export default async function HomePage() {
 
   const date = todayIST();
   const { entries, totals } = await getDailyLog(user!.id, date);
-  const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: "numeric", hour12: false });
-  const defaultMeal = defaultMealTypeForHour(Number(nowIST));
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-4 p-4">
@@ -34,7 +31,7 @@ export default async function HomePage() {
 
       <SummaryCards totals={totals} />
 
-      <AddFoodPanel date={date} defaultMealType={defaultMeal} />
+      <AddFoodPanel date={date} />
 
       <TodayEntries entries={entries} />
     </div>

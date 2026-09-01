@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { logFoodEntry, logExternalFood, addCustomFood } from "@/lib/actions/food";
-import { MEAL_TYPES, type MealType } from "@/lib/types";
 
 type Food = {
   id: string;
@@ -28,13 +27,6 @@ type ExternalFood = {
   fiberG: number | null;
   sugarG: number | null;
   sodiumMg: number | null;
-};
-
-const MEAL_LABELS: Record<MealType, string> = {
-  breakfast: "Breakfast",
-  lunch: "Lunch",
-  dinner: "Dinner",
-  snack: "Snack",
 };
 
 // For foods whose serving is measured in grams/ml, let the user type the
@@ -101,15 +93,8 @@ function AmountInput({
   );
 }
 
-export default function AddFoodPanel({
-  date,
-  defaultMealType,
-}: {
-  date: string;
-  defaultMealType: MealType;
-}) {
+export default function AddFoodPanel({ date }: { date: string }) {
   const [open, setOpen] = useState(false);
-  const [mealType, setMealType] = useState<MealType>(defaultMealType);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Food[]>([]);
   const [externalResults, setExternalResults] = useState<ExternalFood[]>([]);
@@ -193,26 +178,6 @@ export default function AddFoodPanel({
         </button>
       </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-medium text-neutral-600">Meal</label>
-        <div className="flex gap-1.5">
-          {MEAL_TYPES.map((m) => (
-            <button
-              key={m}
-              type="button"
-              onClick={() => setMealType(m)}
-              className={`rounded-full px-3 py-1 text-xs font-medium ${
-                mealType === m
-                  ? "bg-neutral-900 text-white"
-                  : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-              }`}
-            >
-              {MEAL_LABELS[m]}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {!showCustomForm && !selected && (
         <div>
           <input
@@ -287,7 +252,6 @@ export default function AddFoodPanel({
         <form action={logFoodEntry} onSubmit={reset} className="space-y-3">
           <input type="hidden" name="foodId" value={selectedLocal.id} />
           <input type="hidden" name="date" value={date} />
-          <input type="hidden" name="mealType" value={mealType} />
           <input type="hidden" name="servingMultiplier" value={multiplier} />
 
           <div className="rounded-md bg-neutral-50 p-3 text-sm">
@@ -338,7 +302,6 @@ export default function AddFoodPanel({
           <input type="hidden" name="sugarG" value={selectedExternal.sugarG ?? ""} />
           <input type="hidden" name="sodiumMg" value={selectedExternal.sodiumMg ?? ""} />
           <input type="hidden" name="date" value={date} />
-          <input type="hidden" name="mealType" value={mealType} />
           <input type="hidden" name="servingMultiplier" value={multiplier} />
 
           <div className="rounded-md bg-neutral-50 p-3 text-sm">
@@ -381,7 +344,6 @@ export default function AddFoodPanel({
       {showCustomForm && (
         <form action={addCustomFood} onSubmit={reset} className="space-y-2">
           <input type="hidden" name="date" value={date} />
-          <input type="hidden" name="mealType" value={mealType} />
 
           <div>
             <label className="mb-1 block text-xs font-medium text-neutral-600">Name</label>

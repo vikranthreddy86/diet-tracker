@@ -14,13 +14,6 @@ enum FoodSource {
   usda
 }
 
-enum MealType {
-  breakfast
-  lunch
-  dinner
-  snack
-}
-
 /// One row per Supabase-authenticated user. Id matches auth.users.id.
 model Profile {
   id               String   @id @db.Uuid
@@ -75,7 +68,6 @@ model FoodLogEntry {
   food              Food     @relation(fields: [foodId], references: [id])
   date              DateTime @db.Date
   servingMultiplier Float    @default(1)
-  mealType          MealType
   loggedAt          DateTime @default(now())
 
   @@index([userId, date])

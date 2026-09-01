@@ -9,7 +9,7 @@ export async function searchFoods(userId: string, query: string) {
     where: {
       AND: [
         { name: { contains: q, mode: "insensitive" } },
-        { OR: [{ source: "system" }, { createdByUserId: userId }] },
+        { OR: [{ source: "system" }, { source: "usda" }, { createdByUserId: userId }] },
       ],
     },
     take: 20,

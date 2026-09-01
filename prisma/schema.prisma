@@ -11,6 +11,7 @@ datasource db {
 enum FoodSource {
   system
   custom
+  usda
 }
 
 enum MealType {
@@ -55,6 +56,7 @@ model Food {
   category        String?
   isIndian        Boolean    @default(false)
   source          FoodSource @default(custom)
+  externalId      String?    @unique
   createdByUserId String?    @db.Uuid
   createdBy       Profile?   @relation("CustomFoodsByUser", fields: [createdByUserId], references: [id])
   createdAt       DateTime   @default(now())

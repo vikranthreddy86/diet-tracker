@@ -45,6 +45,67 @@ export async function logFoodEntry(formData: FormData) {
   revalidatePath("/");
 }
 
+export async function logExternalFood(formData: FormData) {
+  const userId = await requireUserId();
+  const date = String(formData.get("date"));
+  const mealType = String(formData.get("mealType")) as MealType;
+  const servingMultiplier = Number(formData.get("servingMultiplier") ?? 1);
+  const externalId = String(formData.get("externalId") ?? "");
+  const name = String(formData.get("name") ?? "").trim();
+  const servingSize = Number(formData.get("servingSize"));
+  const servingUnit = String(formData.get("servingUnit") ?? "").trim();
+  const calories = Number(formData.get("calories"));
+  const proteinG = Number(formData.get("proteinG"));
+  const carbsG = Number(formData.get("carbsG"));
+  const fatG = Number(formData.get("fatG"));
+
+  if (
+    !externalId ||
+    !name ||
+    !servingUnit ||
+    !date ||
+    !Number.isFinite(servingMultiplier) ||
+    servingMultiplier <= 0 ||
+    ![servingSize, calories, proteinG, carbsG, fatG].every(Number.isFinite)
+  ) {
+    throw new Error("Invalid external food");
+  }
+
+  const brand = String(formData.get("brand") ?? "").trim();
+
+  const food = await prisma.food.upsert({
+    where: { externalId },
+    update: {},
+    create: {
+      externalId,
+      name,
+      brand: brand || null,
+      servingSize,
+      servingUnit,
+      calories,
+      proteinG,
+      carbsG,
+      fatG,
+      fiberG: numOrNull(formData.get("fiberG")),
+      sugarG: numOrNull(formData.get("sugarG")),
+      sodiumMg: numOrNull(formData.get("sodiumMg")),
+      source: "usda",
+    },
+  });
+
+  await prisma.foodLogEntry.create({
+    data: {
+      userId,
+      foodId: food.id,
+      date: dateStrToDate(date),
+      mealType,
+      servingMultiplier,
+    },
+  });
+
+  revalidatePath("/");
+}
+
 export async function deleteLogEntry(formData: FormData) {
   const userId = await requireUserId();
   const id = String(formData.get("id"));

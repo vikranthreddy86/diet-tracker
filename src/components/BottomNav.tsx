@@ -31,6 +31,21 @@ const TABS = [
       </svg>
     ),
   },
+  {
+    href: "/progress",
+    label: "Progress",
+    icon: (active: boolean) => (
+      <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+        <path
+          d="M4 18l5-6 4 3 7-9"
+          className={active ? "stroke-white" : "stroke-emerald-600"}
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
 ];
 
 export default function BottomNav() {

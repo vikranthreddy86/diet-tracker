@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { logFoodEntry, logExternalFood, addCustomFood } from "@/lib/actions/food";
+import { inputClass } from "@/lib/ui";
 
 type Food = {
   id: string;
@@ -31,9 +32,6 @@ type ExternalFood = {
   potassiumMg: number | null;
   magnesiumMg: number | null;
 };
-
-const inputClass =
-  "w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100";
 
 // Every food can be logged by weight: if the serving unit isn't already
 // grams/ml (e.g. "piece (~40g)", "large egg (~50g)"), pull the gram/ml

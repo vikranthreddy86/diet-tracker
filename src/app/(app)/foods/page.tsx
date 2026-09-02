@@ -12,7 +12,7 @@ export default async function FoodsPage() {
 
   return (
     <div className="min-h-screen pb-20 md:pb-0">
-      <header className="bg-gradient-to-br from-emerald-500 to-teal-500 px-4 pb-8 pt-6 text-white md:px-8">
+      <header className="bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-900 px-4 pb-8 pt-6 text-white md:px-8">
         <div className="mx-auto max-w-md md:max-w-5xl">
           <h1 className="text-lg font-semibold">Food Library</h1>
           <p className="text-sm text-emerald-50">

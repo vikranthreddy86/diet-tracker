@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { signIn } from "@/lib/actions/auth";
+import { LeafIcon } from "@/components/icons";
 
 export default async function LoginPage({
   searchParams,
@@ -9,11 +10,11 @@ export default async function LoginPage({
   const { error, message } = await searchParams;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 px-4">
-      <div className="w-full max-w-sm space-y-6 rounded-3xl bg-white p-8 shadow-xl">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 px-4">
+      <div className="w-full max-w-sm space-y-6 rounded-3xl bg-white p-8 shadow-2xl shadow-black/40">
         <div className="text-center">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-2xl shadow-md shadow-emerald-900/20">
-            🥗
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-950 text-white shadow-md">
+            <LeafIcon className="h-6 w-6" />
           </span>
           <h1 className="mt-3 text-xl font-bold text-slate-900">Welcome back</h1>
           <p className="mt-1 text-sm text-slate-500">Track your food, weight, and progress.</p>
@@ -37,7 +38,7 @@ export default async function LoginPage({
               type="email"
               required
               autoComplete="email"
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-100"
             />
           </div>
           <div>
@@ -50,12 +51,12 @@ export default async function LoginPage({
               type="password"
               required
               autoComplete="current-password"
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-100"
             />
           </div>
           <button
             type="submit"
-            className="w-full rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-900/10 hover:from-emerald-600 hover:to-teal-600"
+            className="w-full rounded-lg bg-emerald-950 px-3 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-emerald-900"
           >
             Log in
           </button>
@@ -63,7 +64,7 @@ export default async function LoginPage({
 
         <p className="text-center text-sm text-slate-500">
           No account?{" "}
-          <Link href="/signup" className="font-semibold text-emerald-600 hover:text-emerald-700">
+          <Link href="/signup" className="font-semibold text-emerald-800 hover:text-emerald-900">
             Sign up
           </Link>
         </p>

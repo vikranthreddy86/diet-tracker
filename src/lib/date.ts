@@ -27,3 +27,7 @@ export function addDaysToDateStr(dateStr: string, days: number): string {
   d.setUTCDate(d.getUTCDate() + days);
   return d.toISOString().slice(0, 10);
 }
+
+export function isSunday(dateStr: string): boolean {
+  return dateStrToDate(dateStr).getUTCDay() === 0;
+}

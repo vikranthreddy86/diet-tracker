@@ -1,5 +1,6 @@
 import { syncWhoopNow, disconnectWhoop } from "@/lib/actions/whoop";
 import TrendChart from "./TrendChart";
+import { WatchIcon } from "./icons";
 
 type Connection = { connectedAt: Date; lastSyncedAt: Date | null } | null;
 type EnergyPoint = { date: string; caloriesBurned: number };
@@ -23,9 +24,11 @@ export default function WhoopSection({
   notice?: { type: "connected" | "error"; message?: string };
 }) {
   return (
-    <section className="space-y-3 rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
+    <section className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-md shadow-stone-900/5">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-slate-900">⌚ Whoop</h2>
+        <h2 className="flex items-center gap-1.5 text-sm font-semibold text-slate-900">
+          <WatchIcon className="h-4 w-4 text-emerald-800" /> Whoop
+        </h2>
         {connection && (
           <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
             Connected
@@ -52,7 +55,7 @@ export default function WhoopSection({
           </p>
           <a
             href="/api/whoop/connect"
-            className="inline-block rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2 text-xs font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
+            className="inline-block rounded-full bg-emerald-950 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-900"
           >
             Connect Whoop
           </a>

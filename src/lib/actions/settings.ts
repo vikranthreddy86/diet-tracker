@@ -36,3 +36,20 @@ export async function updateGoals(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/progress");
 }
+
+function floatOrNull(value: FormDataEntryValue | null): number | null {
+  if (value === null || value === "") return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+export async function updateTargetWeight(formData: FormData) {
+  const userId = await requireUserId();
+
+  await prisma.profile.update({
+    where: { id: userId },
+    data: { targetWeightKg: floatOrNull(formData.get("targetWeightKg")) },
+  });
+
+  revalidatePath("/progress");
+}

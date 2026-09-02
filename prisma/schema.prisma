@@ -23,6 +23,7 @@ model Profile {
   carbsGoalG       Int?
   fatGoalG         Int?
   fiberGoalG       Int?
+  targetWeightKg   Float?
   createdAt        DateTime @default(now())
 
   foodLogEntries     FoodLogEntry[]
@@ -126,6 +127,14 @@ model WhoopDailyEnergy {
   strain         Float?
   cycleStart     DateTime
   cycleEnd       DateTime?
+
+  recoveryScore       Float?
+  hrvMs               Float?
+  restingHeartRate    Float?
+  sleepPerformancePct Float?
+  sleepMinutes        Float?
+  workoutCount        Int?
+  workoutSummary      String?
 
   @@unique([userId, date])
   @@index([userId, date])

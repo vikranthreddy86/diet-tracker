@@ -8,6 +8,7 @@ import {
 import TrendChart from "./TrendChart";
 import { todayIST } from "@/lib/date";
 import { inputClass } from "@/lib/ui";
+import { RulerIcon } from "./icons";
 
 type MeasurementType = {
   id: string;
@@ -20,8 +21,10 @@ const COLORS = ["#8b5cf6", "#0ea5e9", "#f97316", "#ec4899", "#14b8a6", "#84cc16"
 
 export default function MeasurementsSection({ types }: { types: MeasurementType[] }) {
   return (
-    <section className="space-y-3 rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
-      <h2 className="text-sm font-semibold text-slate-900">📏 Body measurements</h2>
+    <section className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-md shadow-stone-900/5">
+      <h2 className="flex items-center gap-1.5 text-sm font-semibold text-slate-900">
+        <RulerIcon className="h-4 w-4 text-emerald-800" /> Body measurements
+      </h2>
 
       <form action={addMeasurementType} className="flex items-end gap-2">
         <div className="flex-1">
@@ -49,7 +52,7 @@ export default function MeasurementsSection({ types }: { types: MeasurementType[
           <form action={addStandardMeasurementTypes}>
             <button
               type="submit"
-              className="rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2 text-xs font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
+              className="rounded-full bg-emerald-950 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-900"
             >
               + Add standard set (Waist, Chest, Hips, Neck, Arms, Thighs, Body Fat %)
             </button>
@@ -115,7 +118,7 @@ export default function MeasurementsSection({ types }: { types: MeasurementType[
                 </div>
                 <button
                   type="submit"
-                  className="rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
+                  className="rounded-lg bg-emerald-950 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-900"
                 >
                   Log
                 </button>

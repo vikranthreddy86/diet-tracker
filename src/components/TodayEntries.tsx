@@ -1,14 +1,15 @@
 import type { Prisma } from "@prisma/client";
 import { deleteLogEntry } from "@/lib/actions/food";
+import { UtensilsIcon } from "./icons";
 
 type EntryWithFood = Prisma.FoodLogEntryGetPayload<{ include: { food: true } }>;
 
 export default function TodayEntries({ entries }: { entries: EntryWithFood[] }) {
   if (entries.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-emerald-200 bg-white/60 p-6 text-center">
-        <p className="text-2xl">🍽️</p>
-        <p className="mt-1 text-sm font-medium text-slate-600">Nothing logged yet</p>
+      <div className="rounded-2xl border border-dashed border-stone-300 bg-white/60 p-6 text-center">
+        <UtensilsIcon className="mx-auto h-6 w-6 text-stone-300" />
+        <p className="mt-2 text-sm font-medium text-slate-600">Nothing logged yet</p>
         <p className="text-xs text-slate-400">Add your first food above to get started.</p>
       </div>
     );
@@ -19,7 +20,7 @@ export default function TodayEntries({ entries }: { entries: EntryWithFood[] }) 
       {entries.map((e) => (
         <li
           key={e.id}
-          className="flex items-center justify-between rounded-xl border border-emerald-50 bg-white px-4 py-3 shadow-sm"
+          className="flex items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3 shadow-sm"
         >
           <div className="flex min-w-0 items-center gap-3">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 text-sm font-semibold text-emerald-700">

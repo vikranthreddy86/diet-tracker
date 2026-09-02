@@ -182,7 +182,7 @@ export default function AddFoodPanel({ date }: { date: string }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 py-3.5 text-sm font-semibold text-white shadow-md shadow-emerald-900/10 hover:from-emerald-600 hover:to-teal-600"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-950 py-3.5 text-sm font-semibold text-white shadow-md shadow-emerald-900/10 hover:bg-emerald-900"
       >
         <span className="text-lg leading-none">+</span> Add food
       </button>
@@ -190,7 +190,7 @@ export default function AddFoodPanel({ date }: { date: string }) {
   }
 
   return (
-    <div className="space-y-3 rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
+    <div className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-md shadow-stone-900/5">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-900">Add food</h3>
         <button onClick={reset} className="text-xs text-slate-400 hover:text-slate-700">
@@ -299,7 +299,7 @@ export default function AddFoodPanel({ date }: { date: string }) {
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
+              className="flex-1 rounded-lg bg-emerald-950 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-900"
             >
               Log it
             </button>
@@ -356,7 +356,7 @@ export default function AddFoodPanel({ date }: { date: string }) {
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
+              className="flex-1 rounded-lg bg-emerald-950 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-900"
             >
               Log it
             </button>
@@ -434,7 +434,7 @@ export default function AddFoodPanel({ date }: { date: string }) {
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
+              className="flex-1 rounded-lg bg-emerald-950 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-900"
             >
               Save & log it
             </button>

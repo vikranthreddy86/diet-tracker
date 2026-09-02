@@ -49,7 +49,7 @@ export default async function TrendsPage({
 
   return (
     <div className="min-h-screen pb-20 md:pb-0">
-      <header className="bg-gradient-to-br from-emerald-500 to-teal-500 px-4 pb-6 pt-6 text-white md:px-8">
+      <header className="bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-900 px-4 pb-6 pt-6 text-white md:px-8">
         <div className="mx-auto max-w-md md:max-w-5xl">
           <h1 className="text-lg font-semibold">Trends</h1>
           <p className="text-sm text-emerald-50">
@@ -63,7 +63,7 @@ export default async function TrendsPage({
 
       <div className="mx-auto -mt-2 max-w-md px-4 md:max-w-5xl md:px-8">
         <div className="flex flex-col gap-4">
-          <section className="rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
+          <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-md shadow-stone-900/5">
             <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
               Daily average
             </h2>
@@ -85,7 +85,7 @@ export default async function TrendsPage({
             {MACROS.map((m) => (
               <section
                 key={m.key}
-                className="rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5"
+                className="rounded-2xl border border-stone-200 bg-white p-4 shadow-md shadow-stone-900/5"
               >
                 <div className="mb-1 flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-slate-900">{m.label}</h3>
@@ -102,7 +102,7 @@ export default async function TrendsPage({
             ))}
           </div>
 
-          <section className="rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
+          <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-md shadow-stone-900/5">
             <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
               Micronutrients
             </h2>

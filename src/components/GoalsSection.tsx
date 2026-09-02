@@ -1,5 +1,6 @@
 import { updateGoals } from "@/lib/actions/settings";
 import { inputClass } from "@/lib/ui";
+import { TargetIcon } from "./icons";
 
 type Goals = {
   dailyCalorieGoal: number | null;
@@ -19,9 +20,11 @@ const FIELDS = [
 
 export default function GoalsSection({ goals }: { goals: Goals }) {
   return (
-    <section className="space-y-3 rounded-2xl border border-emerald-50 bg-white p-4 shadow-md shadow-emerald-900/5">
+    <section className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 shadow-md shadow-stone-900/5">
       <div>
-        <h2 className="text-sm font-semibold text-slate-900">🎯 Daily targets</h2>
+        <h2 className="flex items-center gap-1.5 text-sm font-semibold text-slate-900">
+          <TargetIcon className="h-4 w-4 text-emerald-800" /> Daily targets
+        </h2>
         <p className="text-xs text-slate-400">
           Set these to see progress bars on the Today page. Leave blank to skip any.
         </p>
@@ -42,7 +45,7 @@ export default function GoalsSection({ goals }: { goals: Goals }) {
         ))}
         <button
           type="submit"
-          className="col-span-2 mt-1 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-teal-600"
+          className="col-span-2 mt-1 rounded-lg bg-emerald-950 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-900"
         >
           Save targets
         </button>

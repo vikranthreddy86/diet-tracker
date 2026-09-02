@@ -85,7 +85,7 @@ export default function FoodLibraryList({ foods }: { foods: Food[] }) {
             onClick={() => setFilter(f.key)}
             className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
               filter === f.key
-                ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-sm"
+                ? "bg-emerald-950 text-white shadow-sm"
                 : "bg-white text-slate-500 border border-slate-200 hover:border-emerald-300"
             }`}
           >

@@ -19,6 +19,9 @@ const HANDSHAKE_TIMEOUT_MS = 20000;
 
 export type BodyProfile = { heightCm: number; ageYears: number; sex: "male" | "female" };
 
+/** Called with every raw notification received, for on-screen debugging when things go wrong. */
+export type FrameLogger = (label: string, hex: string) => void;
+
 export type ScaleStatus =
   | { phase: "requesting" }
   | { phase: "connecting" }
@@ -34,6 +37,12 @@ export function isWebBluetoothSupported(): boolean {
 
 function readBE24(d: DataView, off: number): number {
   return (d.getUint8(off) << 16) | (d.getUint8(off + 1) << 8) | d.getUint8(off + 2);
+}
+
+function toHex(d: DataView): string {
+  const bytes: string[] = [];
+  for (let i = 0; i < d.byteLength; i++) bytes.push(d.getUint8(i).toString(16).padStart(2, "0"));
+  return bytes.join(" ");
 }
 
 async function writeValue(char: BluetoothRemoteGATTCharacteristic, bytes: Uint8Array) {
@@ -142,6 +151,7 @@ function runSsw532Protocol(
   bcChar: BluetoothRemoteGATTCharacteristic,
   bodyProfile: BodyProfile,
   onStatus: (s: ScaleStatus) => void,
+  onFrame: FrameLogger,
 ): Promise<number> {
   const session = createSession(device, server, onStatus);
   const { finish, fail, markWeight } = session;
@@ -185,7 +195,9 @@ function runSsw532Protocol(
   const onWeightChanged = (event: Event) => {
     const target = event.target as BluetoothRemoteGATTCharacteristic;
     const d = target.value;
-    if (!d || d.byteLength < 9) return;
+    if (!d) return;
+    onFrame("weight", toHex(d));
+    if (d.byteLength < 9) return;
     if (d.getUint8(1) !== 0x07 || d.getUint8(3) !== 0xa2) return;
     const stability = d.getUint8(4);
     const kg = readBE24(d, 6) / 1000;
@@ -201,7 +213,9 @@ function runSsw532Protocol(
   const onBcChanged = (event: Event) => {
     const target = event.target as BluetoothRemoteGATTCharacteristic;
     const d = target.value;
-    if (!d || d.byteLength < 20) return;
+    if (!d) return;
+    onFrame("bc", toHex(d));
+    if (d.byteLength < 20) return;
     const b1 = d.getUint8(1);
     const b2 = d.getUint8(2);
 
@@ -255,6 +269,7 @@ function runMgbProtocol(
   ctrlChar: BluetoothRemoteGATTCharacteristic,
   bodyProfile: BodyProfile,
   onStatus: (s: ScaleStatus) => void,
+  onFrame: FrameLogger,
 ): Promise<number> {
   const session = createSession(device, server, onStatus);
   const { finish, fail, markWeight } = session;
@@ -291,6 +306,7 @@ function runMgbProtocol(
     const target = event.target as BluetoothRemoteGATTCharacteristic;
     const d = target.value;
     if (!d) return;
+    onFrame("ctrl", toHex(d));
 
     if (d.byteLength === 20) {
       const b0 = d.getUint8(0);
@@ -341,7 +357,11 @@ function runMgbProtocol(
 
 // --- Entry point ---
 
-export async function connectScale(bodyProfile: BodyProfile, onStatus: (s: ScaleStatus) => void): Promise<number> {
+export async function connectScale(
+  bodyProfile: BodyProfile,
+  onStatus: (s: ScaleStatus) => void,
+  onFrame: FrameLogger = () => {},
+): Promise<number> {
   if (!isWebBluetoothSupported()) {
     const message = "Web Bluetooth isn't supported in this browser. Use Chrome on Android.";
     onStatus({ phase: "error", message });
@@ -402,7 +422,7 @@ export async function connectScale(bodyProfile: BodyProfile, onStatus: (s: Scale
   // functions themselves (via session.fail), so they aren't re-wrapped
   // with the generic "doesn't look like a supported scale" message above.
   if (char3) {
-    return runSsw532Protocol(device, server, char1, char2, char3, bodyProfile, onStatus);
+    return runSsw532Protocol(device, server, char1, char2, char3, bodyProfile, onStatus, onFrame);
   }
-  return runMgbProtocol(device, server, char1, char2, bodyProfile, onStatus);
+  return runMgbProtocol(device, server, char1, char2, bodyProfile, onStatus, onFrame);
 }

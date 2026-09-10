@@ -1,12 +1,21 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { connectScale, isWebBluetoothSupported, type ScaleStatus } from "@/lib/bleScale";
 import { logWeight } from "@/lib/actions/progress";
 import { updateBodyProfile } from "@/lib/actions/settings";
 import { inputClass } from "@/lib/ui";
 import { BluetoothIcon } from "./icons";
+
+// navigator.bluetooth doesn't exist during SSR, so the server-rendered HTML
+// must not include this button — useSyncExternalStore forces the server
+// snapshot (false) to match the first client render too, avoiding the
+// hydration mismatch a plain useState+useEffect check would cause.
+const noopSubscribe = () => () => {};
+function useSupportsWebBluetooth() {
+  return useSyncExternalStore(noopSubscribe, isWebBluetoothSupported, () => false);
+}
 
 const STATUS_LABEL: Record<ScaleStatus["phase"], string> = {
   requesting: "Choose your scale from the Bluetooth list…",
@@ -29,11 +38,13 @@ export default function ScaleConnectButton({
   ageYears: number | null;
   sex: string | null;
 }) {
+  const supported = useSupportsWebBluetooth();
   const [status, setStatus] = useState<ScaleStatus | null>(null);
+  const [frames, setFrames] = useState<string[]>([]);
   const [pending, startTransition] = useTransition();
   const router = useRouter();
 
-  if (!isWebBluetoothSupported()) return null;
+  if (!supported) return null;
 
   if (!heightCm || !ageYears || (sex !== "male" && sex !== "female")) {
     return (
@@ -73,7 +84,12 @@ export default function ScaleConnectButton({
 
   const handleConnect = () => {
     setStatus({ phase: "requesting" });
-    connectScale({ heightCm, ageYears, sex }, setStatus)
+    setFrames([]);
+    connectScale(
+      { heightCm, ageYears, sex },
+      setStatus,
+      (label, hex) => setFrames((f) => [...f.slice(-9), `${label}: ${hex}`]),
+    )
       .then((weightKg) => {
         const fd = new FormData();
         fd.set("date", date);
@@ -109,6 +125,27 @@ export default function ScaleConnectButton({
                 ? status.message
                 : STATUS_LABEL[status.phase]}
         </p>
+      )}
+      {status?.phase === "error" && (
+        <details className="rounded-lg bg-slate-50 px-2 py-1.5 text-[10px] text-slate-500">
+          <summary className="cursor-pointer select-none">
+            Debug log ({frames.length} message{frames.length === 1 ? "" : "s"} from scale)
+          </summary>
+          {frames.length === 0 ? (
+            <p className="mt-1">
+              No data was ever received from the scale — the connection itself likely failed or
+              timed out before the handshake could start.
+            </p>
+          ) : (
+            <ul className="mt-1 space-y-0.5 font-mono">
+              {frames.map((f, i) => (
+                <li key={i} className="break-all">
+                  {f}
+                </li>
+              ))}
+            </ul>
+          )}
+        </details>
       )}
     </div>
   );

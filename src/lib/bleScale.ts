@@ -10,6 +10,9 @@ const CHAR_CMD = 0xffb1;
 const CHAR_WEIGHT = 0xffb2;
 const CHAR_BC = 0xffb3;
 
+const CONNECT_TIMEOUT_MS = 15000;
+const HANDSHAKE_TIMEOUT_MS = 20000;
+
 export type ScaleStatus =
   | { phase: "requesting" }
   | { phase: "connecting" }
@@ -43,25 +46,81 @@ async function writeCmd(char: BluetoothRemoteGATTCharacteristic, payload: number
   }
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), ms);
+    promise.then(
+      (v) => {
+        clearTimeout(timer);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(timer);
+        reject(e);
+      },
+    );
+  });
+}
+
+function describeError(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  return String(e);
+}
+
 export async function connectScale(
   bodyProfile: { heightCm: number; ageYears: number },
   onStatus: (s: ScaleStatus) => void,
 ): Promise<number> {
   if (!isWebBluetoothSupported()) {
-    throw new Error("Web Bluetooth isn't supported in this browser. Use Chrome on Android.");
+    const message = "Web Bluetooth isn't supported in this browser. Use Chrome on Android.";
+    onStatus({ phase: "error", message });
+    throw new Error(message);
   }
 
-  onStatus({ phase: "requesting" });
-  const device = await navigator.bluetooth.requestDevice({
-    filters: [{ services: [SERVICE_UUID] }],
-  });
+  let device: BluetoothDevice;
+  try {
+    onStatus({ phase: "requesting" });
+    // acceptAllDevices (not a service filter): many scales don't advertise
+    // their GATT service UUID in the broadcast packet, so a service filter
+    // can leave the picker empty even when the scale is right there.
+    device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: [SERVICE_UUID],
+    });
+  } catch (e) {
+    const message =
+      e instanceof DOMException && e.name === "NotFoundError"
+        ? "No device selected."
+        : `Couldn't open the Bluetooth picker: ${describeError(e)}`;
+    onStatus({ phase: "error", message });
+    throw new Error(message);
+  }
 
-  onStatus({ phase: "connecting" });
-  const server = await device.gatt!.connect();
-  const service = await server.getPrimaryService(SERVICE_UUID);
-  const cmdChar = await service.getCharacteristic(CHAR_CMD);
-  const weightChar = await service.getCharacteristic(CHAR_WEIGHT);
-  const bcChar = await service.getCharacteristic(CHAR_BC);
+  let cmdChar: BluetoothRemoteGATTCharacteristic;
+  let weightChar: BluetoothRemoteGATTCharacteristic;
+  let bcChar: BluetoothRemoteGATTCharacteristic;
+  let server: BluetoothRemoteGATTServer;
+  try {
+    onStatus({ phase: "connecting" });
+    server = await withTimeout(
+      device.gatt!.connect(),
+      CONNECT_TIMEOUT_MS,
+      "Couldn't connect — make sure the scale is on and nearby, then try again.",
+    );
+    const service = await server.getPrimaryService(SERVICE_UUID);
+    cmdChar = await service.getCharacteristic(CHAR_CMD);
+    weightChar = await service.getCharacteristic(CHAR_WEIGHT);
+    bcChar = await service.getCharacteristic(CHAR_BC);
+  } catch (e) {
+    const message = `"${device.name ?? "Selected device"}" doesn't look like a Dr. Trust SSW532 scale (${describeError(e)}). Tell the developer this device's exact name so the protocol can be checked.`;
+    onStatus({ phase: "error", message });
+    try {
+      device.gatt?.disconnect();
+    } catch {
+      // already disconnected
+    }
+    throw new Error(message);
+  }
 
   let sessionId = 0;
   let pendingWeightKg = 0;
@@ -83,6 +142,7 @@ export async function connectScale(
     const finish = (weightKg: number) => {
       if (settled) return;
       settled = true;
+      clearTimeout(handshakeTimer);
       onStatus({ phase: "done", weightKg });
       writeCmd(cmdChar, [0x04, 0x03, 0x00, 0xb0, sessionId & 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         .catch(() => {})
@@ -93,10 +153,15 @@ export async function connectScale(
     const fail = (message: string) => {
       if (settled) return;
       settled = true;
+      clearTimeout(handshakeTimer);
       onStatus({ phase: "error", message });
       cleanup();
       reject(new Error(message));
     };
+
+    const handshakeTimer = setTimeout(() => {
+      fail("Scale didn't respond in time. Make sure it's the Dr. Trust app-paired scale and try again.");
+    }, HANDSHAKE_TIMEOUT_MS);
 
     const sendUserProfile = async () => {
       const ts = Math.floor(Date.now() / 1000);
@@ -143,10 +208,10 @@ export async function connectScale(
           sessionId = d.getUint8(0);
           onStatus({ phase: "waiting" });
           weightChar.addEventListener("characteristicvaluechanged", onWeightChanged);
-          weightChar.startNotifications().catch((e) => fail(`Couldn't subscribe to weight updates: ${e}`));
+          weightChar.startNotifications().catch((e) => fail(`Couldn't subscribe to weight updates: ${describeError(e)}`));
         } else if (b2 === 0x01) {
           onStatus({ phase: "step-on" });
-          sendUserProfile().catch((e) => fail(`Couldn't start measurement: ${e}`));
+          sendUserProfile().catch((e) => fail(`Couldn't start measurement: ${describeError(e)}`));
         }
         return;
       }
@@ -175,6 +240,7 @@ export async function connectScale(
       if (settled) return;
       if (isLiveWeightLocked && pendingWeightKg > 0) {
         settled = true;
+        clearTimeout(handshakeTimer);
         onStatus({ phase: "done", weightKg: pendingWeightKg });
         resolve(pendingWeightKg);
       } else {
@@ -183,6 +249,6 @@ export async function connectScale(
     });
 
     bcChar.addEventListener("characteristicvaluechanged", onBcChanged);
-    bcChar.startNotifications().catch((e) => fail(`Couldn't connect to scale: ${e}`));
+    bcChar.startNotifications().catch((e) => fail(`Couldn't connect to scale: ${describeError(e)}`));
   });
 }

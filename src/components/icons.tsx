@@ -38,6 +38,14 @@ export function WatchIcon(props: IconProps) {
   );
 }
 
+export function BluetoothIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M7 7l10 10-5 5V2l5 5L7 17" />
+    </svg>
+  );
+}
+
 export function TargetIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>

@@ -24,6 +24,8 @@ model Profile {
   fatGoalG         Int?
   fiberGoalG       Int?
   targetWeightKg   Float?
+  heightCm         Int?
+  ageYears         Int?
   createdAt        DateTime @default(now())
 
   foodLogEntries     FoodLogEntry[]

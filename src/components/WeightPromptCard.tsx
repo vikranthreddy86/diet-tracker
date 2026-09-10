@@ -1,8 +1,17 @@
 import { logWeight } from "@/lib/actions/progress";
 import { inputClass } from "@/lib/ui";
 import { ScaleIcon } from "./icons";
+import ScaleConnectButton from "./ScaleConnectButton";
 
-export default function WeightPromptCard({ date }: { date: string }) {
+export default function WeightPromptCard({
+  date,
+  heightCm,
+  ageYears,
+}: {
+  date: string;
+  heightCm: number | null;
+  ageYears: number | null;
+}) {
   return (
     <section className="rounded-2xl border border-sky-100 bg-sky-50 p-4">
       <div className="flex items-center gap-2">
@@ -33,6 +42,9 @@ export default function WeightPromptCard({ date }: { date: string }) {
           Log
         </button>
       </form>
+      <div className="mt-3">
+        <ScaleConnectButton date={date} heightCm={heightCm} ageYears={ageYears} />
+      </div>
     </section>
   );
 }

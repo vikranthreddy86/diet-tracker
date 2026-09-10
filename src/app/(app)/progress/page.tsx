@@ -49,7 +49,12 @@ export default async function ProgressPage({
       <div className="mx-auto -mt-4 max-w-md px-4 md:max-w-5xl md:px-8">
         <div className="flex flex-col gap-4 md:grid md:grid-cols-3 md:items-start md:gap-6">
           <div className="flex flex-col gap-4 md:col-span-1">
-            <WeightSection entries={weightEntries} targetWeightKg={profile.targetWeightKg} />
+            <WeightSection
+              entries={weightEntries}
+              targetWeightKg={profile.targetWeightKg}
+              heightCm={profile.heightCm}
+              ageYears={profile.ageYears}
+            />
             <WhoopSection
               connection={whoopConnection}
               energy={whoopEnergy.map((e) => ({

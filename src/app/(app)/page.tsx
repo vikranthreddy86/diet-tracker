@@ -106,7 +106,9 @@ export default async function HomePage({
       <div className="mx-auto -mt-6 max-w-md px-4 md:max-w-5xl md:px-8">
         <div className="flex flex-col gap-4 md:grid md:grid-cols-3 md:items-start md:gap-6">
           <div className="flex flex-col gap-4 md:col-span-2">
-            {showWeightPrompt && <WeightPromptCard date={date} />}
+            {showWeightPrompt && (
+              <WeightPromptCard date={date} heightCm={profile.heightCm} ageYears={profile.ageYears} />
+            )}
             {showMeasurementPrompt && <MeasurementPromptCard />}
 
             {whoopEnergy && (

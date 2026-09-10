@@ -53,3 +53,17 @@ export async function updateTargetWeight(formData: FormData) {
 
   revalidatePath("/progress");
 }
+
+export async function updateBodyProfile(formData: FormData) {
+  const userId = await requireUserId();
+
+  await prisma.profile.update({
+    where: { id: userId },
+    data: {
+      heightCm: intOrNull(formData.get("heightCm")),
+      ageYears: intOrNull(formData.get("ageYears")),
+    },
+  });
+
+  revalidatePath("/progress");
+}

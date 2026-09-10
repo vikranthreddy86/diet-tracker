@@ -6,22 +6,15 @@ import { computeWeightProjection } from "@/lib/weightProjection";
 import { todayIST, formatDateLabel } from "@/lib/date";
 import { inputClass } from "@/lib/ui";
 import { ScaleIcon } from "./icons";
-import ScaleConnectButton from "./ScaleConnectButton";
 
 type WeightEntry = { id: string; date: Date; weightKg: number; note: string | null };
 
 export default function WeightSection({
   entries,
   targetWeightKg,
-  heightCm,
-  ageYears,
-  sex,
 }: {
   entries: WeightEntry[];
   targetWeightKg: number | null;
-  heightCm: number | null;
-  ageYears: number | null;
-  sex: string | null;
 }) {
   const ascending = [...entries]
     .reverse()
@@ -120,8 +113,6 @@ export default function WeightSection({
           Log
         </button>
       </form>
-
-      <ScaleConnectButton date={todayIST()} heightCm={heightCm} ageYears={ageYears} sex={sex} />
 
       {entries.length > 0 && (
         <ul className="max-h-40 space-y-1 overflow-y-auto">

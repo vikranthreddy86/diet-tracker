@@ -57,11 +57,14 @@ export async function updateTargetWeight(formData: FormData) {
 export async function updateBodyProfile(formData: FormData) {
   const userId = await requireUserId();
 
+  const sex = String(formData.get("sex") ?? "");
+
   await prisma.profile.update({
     where: { id: userId },
     data: {
       heightCm: intOrNull(formData.get("heightCm")),
       ageYears: intOrNull(formData.get("ageYears")),
+      sex: sex === "male" || sex === "female" ? sex : null,
     },
   });
 

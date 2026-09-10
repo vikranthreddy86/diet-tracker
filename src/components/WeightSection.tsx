@@ -15,11 +15,13 @@ export default function WeightSection({
   targetWeightKg,
   heightCm,
   ageYears,
+  sex,
 }: {
   entries: WeightEntry[];
   targetWeightKg: number | null;
   heightCm: number | null;
   ageYears: number | null;
+  sex: string | null;
 }) {
   const ascending = [...entries]
     .reverse()
@@ -119,7 +121,7 @@ export default function WeightSection({
         </button>
       </form>
 
-      <ScaleConnectButton date={todayIST()} heightCm={heightCm} ageYears={ageYears} />
+      <ScaleConnectButton date={todayIST()} heightCm={heightCm} ageYears={ageYears} sex={sex} />
 
       {entries.length > 0 && (
         <ul className="max-h-40 space-y-1 overflow-y-auto">

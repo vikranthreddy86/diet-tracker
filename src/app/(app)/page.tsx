@@ -107,7 +107,12 @@ export default async function HomePage({
         <div className="flex flex-col gap-4 md:grid md:grid-cols-3 md:items-start md:gap-6">
           <div className="flex flex-col gap-4 md:col-span-2">
             {showWeightPrompt && (
-              <WeightPromptCard date={date} heightCm={profile.heightCm} ageYears={profile.ageYears} />
+              <WeightPromptCard
+                date={date}
+                heightCm={profile.heightCm}
+                ageYears={profile.ageYears}
+                sex={profile.sex}
+              />
             )}
             {showMeasurementPrompt && <MeasurementPromptCard />}
 

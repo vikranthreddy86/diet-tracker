@@ -26,6 +26,7 @@ model Profile {
   targetWeightKg   Float?
   heightCm         Int?
   ageYears         Int?
+  sex              String?
   createdAt        DateTime @default(now())
 
   foodLogEntries     FoodLogEntry[]

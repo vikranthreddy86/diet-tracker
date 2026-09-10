@@ -54,6 +54,7 @@ export default async function ProgressPage({
               targetWeightKg={profile.targetWeightKg}
               heightCm={profile.heightCm}
               ageYears={profile.ageYears}
+              sex={profile.sex}
             />
             <WhoopSection
               connection={whoopConnection}

@@ -22,10 +22,12 @@ export default function ScaleConnectButton({
   date,
   heightCm,
   ageYears,
+  sex,
 }: {
   date: string;
   heightCm: number | null;
   ageYears: number | null;
+  sex: string | null;
 }) {
   const [status, setStatus] = useState<ScaleStatus | null>(null);
   const [pending, startTransition] = useTransition();
@@ -33,7 +35,7 @@ export default function ScaleConnectButton({
 
   if (!isWebBluetoothSupported()) return null;
 
-  if (!heightCm || !ageYears) {
+  if (!heightCm || !ageYears || (sex !== "male" && sex !== "female")) {
     return (
       <form action={updateBodyProfile} className="flex flex-wrap items-end gap-2 rounded-xl border border-sky-100 bg-sky-50 p-3">
         <div className="flex-1">
@@ -44,6 +46,16 @@ export default function ScaleConnectButton({
           <label className="mb-1 block text-xs font-medium text-slate-500">Age</label>
           <input name="ageYears" type="number" min="1" max="120" required className={inputClass} />
         </div>
+        <div className="flex-1">
+          <label className="mb-1 block text-xs font-medium text-slate-500">Sex</label>
+          <select name="sex" required defaultValue="" className={inputClass}>
+            <option value="" disabled>
+              Select
+            </option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
         <button
           type="submit"
           className="shrink-0 rounded-lg bg-sky-700 px-3 py-2 text-xs font-semibold text-white hover:bg-sky-800"
@@ -51,7 +63,7 @@ export default function ScaleConnectButton({
           Save
         </button>
         <p className="basis-full text-[11px] text-slate-400">
-          One-time setup so your Dr. Trust scale knows who&apos;s stepping on it.
+          One-time setup so your scale knows who&apos;s stepping on it.
         </p>
       </form>
     );
@@ -61,7 +73,7 @@ export default function ScaleConnectButton({
 
   const handleConnect = () => {
     setStatus({ phase: "requesting" });
-    connectScale({ heightCm, ageYears }, setStatus)
+    connectScale({ heightCm, ageYears, sex }, setStatus)
       .then((weightKg) => {
         const fd = new FormData();
         fd.set("date", date);
